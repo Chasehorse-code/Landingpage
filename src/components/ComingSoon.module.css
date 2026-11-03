@@ -1,0 +1,417 @@
+/* ═══════════════════════════════════════════════════════════
+   ComingSoon — Cinematic 10–12 second intro
+   Animation timeline:
+     0.0 – 2.5s   Background lights emerge from black
+     2.2 – 5.2s   Logo reveal (scale + brightness + sweep)
+     4.6 – 6.0s   Label + divider
+     5.4 – 8.5s   Heading (gold line, then white line)
+     7.8 – 9.1s   Description
+     9.2 – 10.4s  Status pill
+    10.2 – 11.2s  Footer
+    Forever        Background drifts, gold shimmer loops
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Page shell ── */
+.page {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ═══════════════════════════════════
+   BACKGROUND LAYERS
+   Each uses two animations:
+   – a one-shot fade-in for the intro
+   – a continuous transform drift forever
+   Separating opacity (one-shot) from
+   transform (infinite) avoids conflicts.
+   ═══════════════════════════════════ */
+
+/* Layer 1 — Primary gold orb, centred, tight */
+.bgAmbient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 75% 65% at 50% 48%,
+    rgba(200, 168, 75, 0.17) 0%,
+    rgba(200, 168, 75, 0.07) 38%,
+    rgba(200, 168, 75, 0.02) 60%,
+    transparent 76%
+  );
+  pointer-events: none;
+  z-index: 0;
+  /* opacity: one-shot rise over 2.5s */
+  /* transform: endless gentle drift  */
+  animation:
+    bgFadeIn     2.5s ease-out   0s   1        both,
+    ambientDrift  24s ease-in-out 0s   infinite none;
+}
+
+/* Layer 2 — Broader atmospheric swell, starts later */
+.bgSwell {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 115% 95% at 50% 52%,
+    rgba(200, 168, 75, 0.07) 0%,
+    rgba(200, 168, 75, 0.02) 52%,
+    transparent 72%
+  );
+  pointer-events: none;
+  z-index: 0;
+  animation:
+    bgFadeIn   4.5s ease-out   1.5s 1        both,
+    swellDrift  32s ease-in-out 0s   infinite none;
+}
+
+/* Layer 3 — Diagonal soft gold light accent */
+.bgRay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    124deg,
+    transparent             28%,
+    rgba(200, 168, 75, 0.05) 50%,
+    transparent             72%
+  );
+  pointer-events: none;
+  z-index: 0;
+  animation: bgFadeIn 5s ease-out 2.5s 1 both;
+}
+
+/* ═══════════════════════════════════
+   CONTENT COLUMN
+   ═══════════════════════════════════ */
+.center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 28px;
+  max-width: 640px;
+  width: 100%;
+}
+
+/* ═══════════════════════════════════
+   LOGO
+   – logoReveal  : emerge from darkness (scale + brightness)
+                   delay 2.2s, duration 3.0s
+   – logoSweep   : one-shot light streak at t=4.0s
+   – logoWrap box-shadow on hover (not clipped by overflow:hidden)
+   ═══════════════════════════════════ */
+.logoWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 28px;
+  overflow: hidden;         /* clips the sweep streak */
+  border-radius: 6px;       /* softens sweep edges */
+  transition: box-shadow 0.45s var(--ease);
+}
+
+.logoWrap:hover {
+  box-shadow: 0 0 48px rgba(200, 168, 75, 0.18);
+}
+
+.logo {
+  position: relative;
+  z-index: 1;
+  height: clamp(72px, 12vw, 120px);
+  width: auto;
+  max-width: min(320px, 80vw);
+  object-fit: contain;
+  /* starts invisible + slightly small; emerges with brightness flash */
+  animation: logoReveal 3s var(--spring) 2.2s both;
+  transition: transform 0.4s var(--ease);
+}
+
+.logo:hover {
+  transform: scale(1.025);
+}
+
+/* Light streak — translates from far-left to far-right once */
+.logoSweep {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    108deg,
+    transparent              0%,
+    transparent             32%,
+    rgba(255, 255, 255, 0.11) 50%,
+    transparent             68%,
+    transparent             100%
+  );
+  transform: translateX(-220%);
+  animation: sweepAcross 1.4s cubic-bezier(0.4, 0, 0.2, 1) 4.0s 1 forwards;
+}
+
+/* ═══════════════════════════════════
+   LABEL  ── t=4.6s
+   ═══════════════════════════════════ */
+.label {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  animation: riseIn 1.2s var(--spring) 4.6s both;
+}
+
+/* ═══════════════════════════════════
+   DIVIDER  ── t=5.0s
+   ═══════════════════════════════════ */
+.divider {
+  width: 48px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  margin-bottom: 28px;
+  animation: expandX 1.0s var(--spring) 5.0s both;
+}
+
+/* ═══════════════════════════════════
+   HEADING
+   ═══════════════════════════════════ */
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 24px;
+  line-height: 1.08;
+}
+
+/*
+ * "Something Better" — gold, italic, shimmer
+ * riseIn at t=5.4s (1.6s), then goldShimmer starts at t=7.1s (loops).
+ * Two simultaneous animations: riseIn controls opacity+transform,
+ * goldShimmer controls background-position — no property conflict.
+ */
+.h1Gold {
+  display: block;
+  font-family: var(--serif);
+  font-size: clamp(36px, 5.8vw, 66px);
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: -0.028em;
+  background: linear-gradient(
+    115deg,
+    var(--gold-muted)   0%,
+    var(--gold)         28%,
+    var(--gold-bright)  50%,
+    var(--gold)         72%,
+    var(--gold-muted)   100%
+  );
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation:
+    riseIn      1.6s var(--spring) 5.4s 1        both,
+    goldShimmer 8.0s linear        7.1s infinite  none;
+}
+
+/* "Is Coming." — white  t=6.9s */
+.h1White {
+  display: block;
+  font-family: var(--serif);
+  font-size: clamp(32px, 5vw, 58px);
+  font-weight: 500;
+  letter-spacing: -0.022em;
+  color: var(--white);
+  animation: riseIn 1.5s var(--spring) 6.9s both;
+}
+
+/* ═══════════════════════════════════
+   DESCRIPTION  ── t=7.8s
+   ═══════════════════════════════════ */
+.description {
+  font-family: var(--sans);
+  font-size: clamp(13px, 1.5vw, 15px);
+  font-weight: 400;
+  line-height: 1.85;
+  color: var(--white-60);
+  max-width: 420px;
+  margin-bottom: 36px;
+  animation: riseIn 1.3s var(--spring) 7.8s both;
+}
+
+/* ═══════════════════════════════════
+   STATUS PILL  ── t=9.2s
+   ═══════════════════════════════════ */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 22px;
+  border: 1px solid var(--border-gold);
+  border-radius: 100px;
+  background: var(--gold-06);
+  animation: riseIn 1.2s var(--spring) 9.2s both;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+  animation: pulseDot 2.2s ease-in-out infinite;
+}
+
+.statusText {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════
+   FOOTER  ── t=10.2s
+   ═══════════════════════════════════ */
+.footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  border-top: 1px solid var(--border);
+  animation: fadeIn 1.0s var(--spring) 10.2s both;
+}
+
+.footer span {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--white-35);
+  letter-spacing: 0.04em;
+}
+
+/* ═══════════════════════════════════
+   KEYFRAMES
+   ═══════════════════════════════════ */
+
+/* Background one-shot opacity raise */
+@keyframes bgFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/*
+ * Ambient drift — only animates transform so it can run alongside
+ * the one-shot bgFadeIn (which animates opacity) with no conflicts.
+ * Slow 24s loop, tiny offsets feel organic not mechanical.
+ */
+@keyframes ambientDrift {
+  0%   { transform: translate(0%,     0%);   }
+  20%  { transform: translate(2.5%,  -2%);   }
+  40%  { transform: translate(-1.5%,  3%);   }
+  60%  { transform: translate(2%,     2%);   }
+  80%  { transform: translate(-2.5%, -1%);   }
+  100% { transform: translate(0%,     0%);   }
+}
+
+/* Swell drifts in opposite direction for parallax depth */
+@keyframes swellDrift {
+  0%   { transform: translate(0%,    0%);   }
+  25%  { transform: translate(-3%,   2%);   }
+  50%  { transform: translate(2%,   -3%);   }
+  75%  { transform: translate(-2%,   3%);   }
+  100% { transform: translate(0%,    0%);   }
+}
+
+/*
+ * Logo emerge — starts dark, small, shifted down.
+ * Mid-point brightness peak creates cinematic "light turns on" feel.
+ * Ends at natural brightness and scale.
+ */
+@keyframes logoReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.86) translateY(12px);
+    filter: brightness(0.15) saturate(0);
+  }
+  45% {
+    opacity: 0.85;
+    filter: brightness(1.18) saturate(1.1);
+  }
+  70% {
+    filter: brightness(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: brightness(1) saturate(1);
+  }
+}
+
+/* Light streak across logo (fires once, then element stays off-screen right) */
+@keyframes sweepAcross {
+  from { transform: translateX(-220%); }
+  to   { transform: translateX(220%);  }
+}
+
+/* Line expand (horizontal scale from center) */
+@keyframes expandX {
+  from { transform: scaleX(0); opacity: 0; }
+  to   { transform: scaleX(1); opacity: 1; }
+}
+
+/* ═══════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════ */
+
+/* Tablet */
+@media (max-width: 768px) {
+  .logo         { height: clamp(60px, 11vw, 100px); }
+  .logoWrap     { margin-bottom: 22px; }
+  .divider      { margin-bottom: 22px; }
+  .heading      { margin-bottom: 20px; }
+  .description  { margin-bottom: 28px; }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .center       { padding: 0 20px; }
+  .logo         { height: clamp(52px, 18vw, 80px); }
+  .logoWrap     { margin-bottom: 18px; }
+  .label        { margin-bottom: 12px; font-size: 10px; }
+  .divider      { margin-bottom: 18px; }
+  .heading      { margin-bottom: 16px; }
+  .description  { margin-bottom: 24px; max-width: 100%; }
+  .status       { padding: 8px 18px; }
+  .statusText   { font-size: 9.5px; letter-spacing: 0.18em; }
+}
+
+/* Landscape / short viewport */
+@media (max-height: 580px) {
+  .logoWrap     { margin-bottom: 12px; }
+  .logo         { height: clamp(44px, 9vh, 70px); }
+  .label        { margin-bottom: 8px; }
+  .divider      { margin-bottom: 12px; }
+  .heading      { margin-bottom: 12px; gap: 2px; }
+  .description  { margin-bottom: 18px; font-size: 12.5px; line-height: 1.7; }
+}
+
+/* Very small (iPhone SE) */
+@media (max-width: 380px) {
+  .label { display: none; }
+}

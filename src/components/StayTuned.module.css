@@ -1,0 +1,244 @@
+/* ═══════════════════════════════════════════
+   StayTuned Section
+   ═══════════════════════════════════════════ */
+
+.section {
+  position: relative;
+  padding: 120px 48px 140px;
+  overflow: hidden;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.glow {
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 400px;
+  background: radial-gradient(
+    ellipse at top center,
+    rgba(201,168,76,0.07) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+
+/* ── Container ── */
+.container {
+  position: relative;
+  z-index: 2;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 80px;
+}
+
+/* ── Section head ── */
+.sectionHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+  max-width: 560px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 5px 16px;
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-pill);
+  background: var(--gold-alpha-06);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4.5vw, 50px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--text-primary);
+}
+
+.lead {
+  font-size: 15.5px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+/* ── Pillars ── */
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  width: 100%;
+  background: var(--border-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.pillar {
+  position: relative;
+  padding: 44px 36px;
+  background: var(--bg-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition:
+    background var(--dur-mid) var(--ease-out),
+    box-shadow var(--dur-mid) var(--ease-out);
+  animation: fadeUp 0.7s var(--ease-out) calc(0.1s + var(--i) * 0.14s) both;
+}
+
+.pillar:hover {
+  background: var(--bg-raised);
+  box-shadow: inset 0 0 0 1px var(--border-gold);
+}
+
+/* Top gold accent on hover */
+.pillar::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 36px; right: 36px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  opacity: 0;
+  transition: opacity var(--dur-mid) var(--ease-out);
+}
+
+.pillar:hover::before { opacity: 1; }
+
+.pillarNum {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--gold-muted);
+  opacity: 0.7;
+}
+
+.pillarDivider {
+  width: 28px;
+  height: 1px;
+  background: var(--border-gold);
+}
+
+.pillarTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.pillarBody {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+/* ── Status strip ── */
+.status {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 32px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  width: 100%;
+  max-width: 560px;
+}
+
+.statusDotWrap {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border-gold);
+  background: var(--gold-alpha-06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: pulseDot 2.4s ease-in-out infinite;
+}
+
+.statusInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.statusLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.progressTrack {
+  height: 3px;
+  background: rgba(255,255,255,0.05);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.progressBar {
+  width: 74%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-muted), var(--gold-bright));
+  border-radius: var(--radius-pill);
+  position: relative;
+  overflow: hidden;
+}
+
+.progressBar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  background-size: 200% 100%;
+  animation: goldShimmer 2.5s linear infinite;
+}
+
+.statusNote {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .pillars {
+    grid-template-columns: 1fr;
+  }
+  .section { padding: 100px 28px 120px; }
+}
+
+@media (max-width: 640px) {
+  .section { padding: 80px 20px 100px; }
+  .pillar  { padding: 32px 24px; }
+  .status  { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .statusInfo { width: 100%; }
+}
